@@ -13,7 +13,7 @@ import static org.testcontainers.shaded.org.hamcrest.MatcherAssert.assertThat;
 class KafkaWithJUnitExtensionTest {
 
     @Test
-    void testListTopics(KafkaTestClusterExtension.KafkaTestCluster cluster) throws Exception {
+    void clusterStartsWithSchemasTopic(KafkaTestCluster cluster) throws Exception {
 
         Properties kafkaSettings = cluster.getKafkaSettings();
 

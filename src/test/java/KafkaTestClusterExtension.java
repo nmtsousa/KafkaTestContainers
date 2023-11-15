@@ -57,8 +57,4 @@ public class KafkaTestClusterExtension implements BeforeAllCallback, AfterAllCal
             return kafkaSettings;
         };
     }
-
-    public interface KafkaTestCluster {
-        Properties getKafkaSettings();
-    }
 }
