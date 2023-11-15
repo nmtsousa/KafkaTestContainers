@@ -1,4 +1,5 @@
 import org.apache.kafka.clients.admin.Admin;
+import org.apache.kafka.clients.admin.ListTopicsResult;
 import org.apache.kafka.streams.StreamsConfig;
 import org.junit.jupiter.api.Test;
 import org.testcontainers.containers.GenericContainer;
@@ -7,9 +8,15 @@ import org.testcontainers.containers.Network;
 import org.testcontainers.containers.wait.strategy.Wait;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
+import org.testcontainers.shaded.org.hamcrest.CoreMatchers;
+import org.testcontainers.shaded.org.hamcrest.MatcherAssert;
 import org.testcontainers.utility.DockerImageName;
 
 import java.util.Properties;
+import java.util.Set;
+
+import static org.testcontainers.shaded.org.hamcrest.CoreMatchers.equalTo;
+import static org.testcontainers.shaded.org.hamcrest.MatcherAssert.assertThat;
 
 @Testcontainers
 class KafkaTest {
@@ -33,7 +40,7 @@ class KafkaTest {
             .waitingFor(Wait.forHttp("/subjects").forStatusCode(200));
 
     @Test
-    void testListTopics() {
+    void testListTopics() throws Exception {
 
         Properties kafkaSettings = new Properties();
         kafkaSettings.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG,
@@ -45,7 +52,10 @@ class KafkaTest {
         // Remaining KAFKA Settings
 
         try (Admin admin = Admin.create(kafkaSettings)) {
-            admin.listTopics();
+            ListTopicsResult listTopicsResult = admin.listTopics();
+            Set<String> names = listTopicsResult.names().get();
+            assertThat(names.size(), equalTo(1));
+            assertThat(names.iterator().next(), equalTo("_schemas"));
         }
     }
 }
